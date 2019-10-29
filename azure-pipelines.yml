@@ -37,6 +37,13 @@ steps:
     pwd
   displayName: 'multi line command test'
 
+- task: DotNetCoreCLI@2
+  displayName: 'Install ReportGenerator'
+  inputs:
+    command: custom
+    custom: tool
+    arguments: 'install --global dotnet-reportgenerator-globaltool'
+
 - template: templates/build.yml
   parameters:
     buildConfiguration: 'Debug'
@@ -44,6 +51,10 @@ steps:
 - template: templates/build.yml
   parameters:
     buildConfiguration: 'Release'
+
+- script: |
+    reportgenerator -reports:$(Build.SourcesDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/CodeCoverage -reporttypes:HtmlInline_AzurePipelines
+  displayName: 'Create code coverage report'
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage report'
