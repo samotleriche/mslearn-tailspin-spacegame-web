@@ -1,12 +1,19 @@
 pool:
   vmImage: 'Ubuntu-16.04'
-  demands:
-    - npm
+
+trigger:
+  branches:
+    include:
+    - '*'
+  paths:
+    exclude:
+    - docs/*
+
+pr: none    
 
 variables:
   buildConfiguration: 'Release'
-  wwwrootDir: 'Tailspin.SpaceGame.Web/wwwroot'
-  dotnetSdkVersion: '2.1.505'
+  dotnetSdkVersion: '3.0.100'
 
 steps:
 - task: DotNetCoreInstaller@0
@@ -14,33 +21,21 @@ steps:
   inputs:
     version: '$(dotnetSdkVersion)'
 
-- task: Npm@1
-  displayName: 'Run npm install'
-  inputs:
-    verbose: false
-
-- script: './node_modules/.bin/node-sass $(wwwrootDir) --output $(wwwrootDir)'
-  displayName: 'Compile Sass assets'
-
-- task: gulp@1
-  displayName: 'Run gulp tasks'
-
 - script: 'echo "$(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)" > buildinfo.txt'
   displayName: 'Write build info'
-  workingDirectory: $(wwwrootDir)
 
 - task: DotNetCoreCLI@2
   displayName: 'Restore project dependencies'
   inputs:
     command: 'restore'
-    projects: '**/*.csproj'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Build the project - $(buildConfiguration)'
-  inputs:
-    command: 'build'
-    arguments: '--no-restore --configuration $(buildConfiguration)'
-    projects: '**/*.csproj'
+- script: 'ls'
+  displayName: 'ls command test'
+  
+- script: |
+    ls
+    pwd
+  displayName: 'multi line command test'
 
 - task: DotNetCoreCLI@2
   displayName: 'Install ReportGenerator'
@@ -49,13 +44,13 @@ steps:
     custom: tool
     arguments: 'install --global dotnet-reportgenerator-globaltool'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Run unit tests - $(buildConfiguration)'
-  inputs:
-    command: 'test'
-    arguments: '--no-build --configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/'
-    publishTestResults: true
-    projects: '**/*.Tests.csproj'
+- template: templates/build.yml
+  parameters:
+    buildConfiguration: 'Debug'
+
+- template: templates/build.yml
+  parameters:
+    buildConfiguration: 'Release'
 
 - script: |
     reportgenerator -reports:$(Build.SourcesDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/CodeCoverage -reporttypes:HtmlInline_AzurePipelines
@@ -66,15 +61,6 @@ steps:
   inputs:
     codeCoverageTool: 'cobertura'
     summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
-
-- task: DotNetCoreCLI@2
-  displayName: 'Publish the project - $(buildConfiguration)'
-  inputs:
-    command: 'publish'
-    projects: '**/*.csproj'
-    publishWebProjects: false
-    arguments: '--no-build --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(buildConfiguration)'
-    zipAfterPublish: true
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop'
