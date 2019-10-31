@@ -21,6 +21,11 @@ steps:
   inputs:
     version: '$(dotnetSdkVersion)'
 
+- task: DotNetCoreInstaller@0
+  displayName: 'Use .NET Core SDK 2.0.0'
+  inputs:
+    version: '2.0.0'
+
 - script: 'echo "$(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)" > buildinfo.txt'
   displayName: 'Write build info'
 
