@@ -57,6 +57,8 @@ steps:
     projectKey: 'azure_test'
     projectName: 'azure_test'
 
+- task: SonarQubeAnalyze@4
+
 - task: SonarQubePublish@4
   inputs:
     pollingTimeoutSec: '300'
