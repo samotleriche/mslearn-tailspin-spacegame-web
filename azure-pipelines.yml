@@ -52,6 +52,7 @@ steps:
     projectKey: 'azure_test'
     projectName: 'azure_test'
 
+- task: SonarQubeAnalyze@4
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop'
