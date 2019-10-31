@@ -45,6 +45,14 @@ steps:
   parameters:
     buildConfiguration: 'Release'
 
+- task: SonarQubePrepare@4
+  inputs:
+    SonarQube: 'sonarQube'
+    scannerMode: 'MSBuild'
+    projectKey: 'azure_test'
+    projectName: 'azure_test'
+
+
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop'
   condition: succeeded()
