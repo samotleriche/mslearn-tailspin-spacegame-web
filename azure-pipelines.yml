@@ -54,6 +54,11 @@ steps:
     pwd
   displayName: 'multi line command test'
 
+- task: DotNetCoreInstaller@0
+  displayName: 'Use .NET Core SDK $(dotnetSdkVersion)'
+  inputs:
+    version: '$(dotnetSdkVersion)'
+
 - task: DotNetCoreCLI@2
   displayName: 'Install ReportGenerator'
   inputs:
@@ -72,6 +77,11 @@ steps:
 - script: |
     reportgenerator -reports:$(Build.SourcesDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/CodeCoverage -reporttypes:HtmlInline_AzurePipelines
   displayName: 'Create code coverage report'
+
+- task: DotNetCoreInstaller@0
+  displayName: 'Use .NET Core SDK 2.0.0'
+  inputs:
+    version: '2.0.0'
 
 - task: SonarCloudAnalyze@1
   displayName: 'Run SonarCloud code analysis'
