@@ -49,8 +49,7 @@ steps:
     and
     (
     succeeded(),
-    eq(variables['Build.Reason'], 'IndividualCI'),
-    eq(variables['System.IndividualCI.TargetBranch'], 'failed-test')
+    eq(variables['Build.Reason'], 'IndividualCI')
     )
 
 - script: 'ls'
@@ -96,8 +95,7 @@ steps:
     and
     (
     succeeded(),
-    eq(variables['Build.Reason'], 'IndividualCI'),
-    eq(variables['System.IndividualCI.TargetBranch'], 'failed-test')
+    eq(variables['Build.Reason'], 'IndividualCI')
     )
 
 - task: SonarCloudPublish@1
@@ -106,8 +104,7 @@ steps:
     and
     (
     succeeded(),
-    eq(variables['Build.Reason'], 'IndividualCI'),
-    eq(variables['System.IndividualCI.TargetBranch'], 'failed-test')
+    eq(variables['Build.Reason'], 'IndividualCI')
     )
 
 - task: PublishCodeCoverageResults@1
