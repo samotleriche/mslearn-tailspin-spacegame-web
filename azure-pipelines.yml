@@ -49,8 +49,8 @@ steps:
     and
     (
     succeeded(),
-    eq(variables['Build.Reason'], 'PullRequest'),
-    eq(variables['System.PullRequest.TargetBranch'], 'master')
+    eq(variables['Build.Reason'], 'IndividualCI'),
+    eq(variables['System.IndividualCI.TargetBranch'], 'failed-test')
     )
 
 - script: 'ls'
