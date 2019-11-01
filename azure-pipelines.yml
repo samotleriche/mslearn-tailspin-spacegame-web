@@ -96,8 +96,8 @@ steps:
     and
     (
     succeeded(),
-    eq(variables['Build.Reason'], 'PullRequest'),
-    eq(variables['System.PullRequest.TargetBranch'], 'master')
+    eq(variables['Build.Reason'], 'IndividualCI'),
+    eq(variables['System.IndividualCI.TargetBranch'], 'failed-test')
     )
 
 - task: SonarCloudPublish@1
@@ -106,8 +106,8 @@ steps:
     and
     (
     succeeded(),
-    eq(variables['Build.Reason'], 'PullRequest'),
-    eq(variables['System.PullRequest.TargetBranch'], 'master')
+    eq(variables['Build.Reason'], 'IndividualCI'),
+    eq(variables['System.IndividualCI.TargetBranch'], 'failed-test')
     )
 
 - task: PublishCodeCoverageResults@1
